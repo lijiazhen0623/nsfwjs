@@ -1,0 +1,46 @@
+# 依赖目录
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 构建输出
+dist/
+build/
+*.tsbuildinfo
+
+# 日志文件
+logs/
+*.log
+
+# 上传的文件
+uploads/*
+!uploads/.gitkeep
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 和编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+
+# 测试覆盖率
+coverage/
+
+# 临时文件
+tmp/
+temp/
+
+# Docker
+.docker/
+docker-compose.override.yml 
