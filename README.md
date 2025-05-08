@@ -1,6 +1,28 @@
 # NSFW 图片检测服务
 
-基于 TensorFlow.js 的图片内容检测服务。
+基于 NSFWJS 的图片内容检测服务。
+
+## Docker Hub
+
+```bash
+docker pull lljjzz/nsfwjs:latest
+```
+
+### 镜像说明
+- 基于 Node.js 20 构建
+- 预装 TensorFlow.js 和 NSFWJS
+- 支持多种图片格式检测
+- 轻量级设计，镜像体积小
+- 包含健康检查接口
+
+### 快速使用
+```bash
+# 拉取镜像
+docker pull lljjzz/nsfwjs:latest
+
+# 运行容器
+docker run -d -p 3000:3000 --name nsfwjs lljjzz/nsfwjs:latest
+```
 
 ## 快速开始
 
