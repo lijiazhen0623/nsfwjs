@@ -24,18 +24,46 @@ const upload = multer({
         fileSize: 100 * 1024 * 1024, // 限制文件大小为 100MB
     },
     fileFilter: (req, file, cb) => {
-        // 检查 MIME 类型
-        if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
-            return cb(new Error('不支持该格式的图片！'), false);
-        }
+        try {
+            // 检查文件是否为空
+            if (!file || !file.originalname) {
+                return cb(new Error('无效的文件！'), false);
+            }
 
-        // 检查文件扩展名
-        const ext = path.extname(file.originalname).toLowerCase();
-        if (!ALLOWED_EXTENSIONS.includes(ext)) {
-            return cb(new Error('不支持的文件扩展名！'), false);
-        }
+            // 检查文件扩展名
+            const ext = path.extname(file.originalname).toLowerCase();
+            if (!ext) {
+                return cb(new Error('文件缺少扩展名！'), false);
+            }
 
-        cb(null, true);
+            if (!ALLOWED_EXTENSIONS.includes(ext)) {
+                return cb(new Error(`不支持的文件扩展名：${ext}，支持的扩展名：${ALLOWED_EXTENSIONS.join(', ')}`), false);
+            }
+
+            // 如果MIME类型是text/plain，尝试根据扩展名推断正确的MIME类型
+            if (file.mimetype === 'text/plain') {
+                const mimeMap = {
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.png': 'image/png',
+                    '.gif': 'image/gif',
+                    '.webp': 'image/webp',
+                    '.avif': 'image/avif'
+                };
+                file.mimetype = mimeMap[ext] || file.mimetype;
+                console.log(`修正后的MIME类型: ${file.mimetype}`);
+            }
+
+            // 检查 MIME 类型
+            if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
+                return cb(new Error(`不支持的图片格式：${file.mimetype}，支持的格式：${ALLOWED_MIMETYPES.join(', ')}`), false);
+            }
+
+            cb(null, true);
+        } catch (error) {
+            console.error('文件过滤器错误:', error);
+            cb(new Error('文件验证过程发生错误！'), false);
+        }
     }
 });
 
