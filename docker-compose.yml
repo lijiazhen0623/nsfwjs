@@ -2,12 +2,11 @@ version: '3.8'
 
 services:
   nsfwjs:
-    image: lljjzz/nsfw-app:latest
+    image: lljjzz/nsfwjs:latest
     container_name: nsfwjs
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
       - PORT=3000
     restart: unless-stopped
     healthcheck:
