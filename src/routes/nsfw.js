@@ -12,11 +12,15 @@ const ALLOWED_MIMETYPES = [
     'image/png',
     'image/gif',
     'image/webp',
-    'image/avif'
+    'image/heic',
+    'image/heif',
+    'image/bmp',
+    'image/tiff',
+    'image/x-tiff'
 ];
 
 // 允许的文件扩展名
-const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'];
+const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif', '.bmp', '.tiff', '.tif'];
 
 const upload = multer({
     dest: 'uploads/',
@@ -48,7 +52,11 @@ const upload = multer({
                     '.png': 'image/png',
                     '.gif': 'image/gif',
                     '.webp': 'image/webp',
-                    '.avif': 'image/avif'
+                    '.heic': 'image/heic',
+                    '.heif': 'image/heif',
+                    '.bmp': 'image/bmp',
+                    '.tiff': 'image/tiff',
+                    '.tif': 'image/tiff'
                 };
                 file.mimetype = mimeMap[ext] || file.mimetype;
                 console.log(`修正后的MIME类型: ${file.mimetype}`);

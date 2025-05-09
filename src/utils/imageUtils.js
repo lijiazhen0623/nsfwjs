@@ -1,7 +1,8 @@
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as tf from '@tensorflow/tfjs-node';
 import sharp from 'sharp';
 import { createCanvas, loadImage } from 'canvas';
-// 高级图像预处理管道
+
+// 高级图像预处理管道 支持格式：JPEG/PNG/GIF/WEBP/HEIC/BMP/TIFF
 async function optimizeForNSFW(imagePath) {
     // 第一阶段：统一格式转换
     const processedBuffer = await sharp(imagePath)

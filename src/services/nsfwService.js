@@ -1,5 +1,5 @@
 import * as nsfwjs from 'nsfwjs-patched';
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as tf from '@tensorflow/tfjs-node';
 import { myLoadImage, ImageProcessor } from '../utils/imageUtils.js';
 
 let model;
