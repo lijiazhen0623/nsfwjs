@@ -15,7 +15,7 @@ const UPLOAD_CONFIG = {
 
 // 定期清理临时文件的函数
 const cleanupTempFiles = () => {
-    const uploadsDir = 'uploads/';
+    const uploadsDir = UPLOAD_CONFIG.UPLOAD_DIR;
     try {
         if (!fs.existsSync(uploadsDir)) {
             return;
@@ -27,34 +27,14 @@ const cleanupTempFiles = () => {
         files.forEach(file => {
             const filePath = path.join(uploadsDir, file);
             try {
-                // 检查文件是否正在被使用
-                const fileHandle = fs.openSync(filePath, 'r+');
                 const stats = fs.statSync(filePath);
-                
-                // 如果文件超过1小时未被修改，且当前没有被其他进程锁定
+                // 删除超过1小时的临时文件
                 if (now - stats.mtime.getTime() > 3600000) {
-                    try {
-                        // 尝试获取文件锁
-                        fs.flockSync(fileHandle, fs.constants.LOCK_EX | fs.constants.LOCK_NB);
-                        // 如果成功获取锁，说明文件没有被使用
-                        fs.unlinkSync(filePath);
-                        console.log(`已清理过期临时文件: ${file}`);
-                    } catch (lockErr) {
-                        // 如果无法获取锁，说明文件正在被使用
-                        console.log(`文件 ${file} 正在使用中，跳过清理`);
-                    } finally {
-                        // 释放文件锁
-                        fs.flockSync(fileHandle, fs.constants.LOCK_UN);
-                    }
+                    fs.unlinkSync(filePath);
+                    console.log(`已清理过期临时文件: ${file}`);
                 }
-                // 关闭文件句柄
-                fs.closeSync(fileHandle);
             } catch (err) {
-                if (err.code === 'EBUSY') {
-                    console.log(`文件 ${file} 正在被其他进程使用，跳过清理`);
-                } else {
-                    console.error(`清理文件失败 ${file}:`, err);
-                }
+                console.error(`清理文件失败 ${file}:`, err);
             }
         });
     } catch (err) {
