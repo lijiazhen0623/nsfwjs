@@ -1,12 +1,15 @@
 import * as nsfwjs from 'nsfwjs-patched';
+import * as tf from '@tensorflow/tfjs-node';
 import { loadImage, ImageProcessor } from '../utils/imageUtils.js';
 
 let model;
 
 const loadModel = async () => {
     if (!model) {
-        const modelName = "InceptionV3";
-        model = await nsfwjs.load(modelName);
+        tf.enableProdMode();
+        const modelName = "inception_v3";
+        // model = await nsfwjs.load(modelName);
+        model = await nsfwjs.load("file://models/"+modelName+"/",{size:299});
         console.log(`模型${modelName}加载成功`);
     }
     return model;
