@@ -9,7 +9,7 @@ const loadModel = async () => {
         tf.enableProdMode();
         const modelName = "inception_v3";
         // model = await nsfwjs.load(modelName);
-        model = await nsfwjs.load("file://models/"+modelName+"/",{size:299});
+        model = await nsfwjs.load(`file://models/${modelName}/`,{size:299});
         console.log(`模型${modelName}加载成功`);
     }
     return model;
