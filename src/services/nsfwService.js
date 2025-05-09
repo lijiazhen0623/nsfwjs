@@ -1,12 +1,13 @@
 import * as nsfwjs from 'nsfwjs-patched';
-import * as tf from '@tensorflow/tfjs-node';
-import { loadImage, ImageProcessor } from '../utils/imageUtils.js';
+import * as tf from '@tensorflow/tfjs-node-gpu';
+import { myLoadImage, ImageProcessor } from '../utils/imageUtils.js';
 
 let model;
 
 const loadModel = async () => {
     if (!model) {
         tf.enableProdMode();
+        console.log("当前后端:", tf.getBackend()); 
         const modelName = "inception_v3";
         // model = await nsfwjs.load(modelName);
         model = await nsfwjs.load(`file://models/${modelName}/`,{size:299});
@@ -18,7 +19,7 @@ const loadModel = async () => {
 export const analyzeImage = async (imagePath) => {
     try {
         const model = await loadModel();
-        const image = await loadImage(imagePath);
+        const image = await myLoadImage(imagePath);
         const predictions = await model.classify(image);
         const result = {
             porn: predictions.find(p => p.className === 'Porn')?.probability || 0,
