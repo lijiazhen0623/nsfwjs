@@ -2,6 +2,8 @@
 
 基于 NSFWJS 的图片内容检测服务。
 
+支持JPEG/PNG/GIF/WEBP/HEIC/BMP/TIFF
+
 ## Docker Hub
 
 ```bash
