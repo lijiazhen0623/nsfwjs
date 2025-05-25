@@ -63,6 +63,7 @@ process.on('SIGTERM', () => {
 
 // 允许的图片类型
 const ALLOWED_MIMETYPES = [
+    'image/jpg',
     'image/jpeg',
     'image/png',
     'image/gif',
@@ -236,40 +237,13 @@ const handleMulterError = (err, req, res, next) => {
     next(err);
 };
 
-// 清理上传文件的中间件
-const cleanupFiles = (req, res, next) => {
-    // 确保在响应结束时清理文件
-    const cleanup = () => {
-        const files = req.files || (req.file ? [req.file] : []);
-        files.forEach(file => {
-            if (file.path) {
-                try {
-                    fs.unlinkSync(file.path);
-                } catch (err) {
-                    console.error(`文件删除失败 ${file.path}:`, err);
-                }
-            }
-        });
-    };
-
-    // 在响应结束时清理
-    res.on('finish', cleanup);
-    // 在响应出错时也清理
-    res.on('error', cleanup);
-    // 在连接关闭时也清理
-    req.on('close', cleanup);
-
-    next();
-};
-
 // 单图片上传路由
-router.post('/classify', upload.single('image'), handleMulterError, cleanupFiles, detectImage);
+router.post('/classify', upload.single('image'), handleMulterError, detectImage);
 
 // 多图片上传路由
 router.post('/classify-multiple', 
     upload.array('images', UPLOAD_CONFIG.MAX_FILES), 
     handleMulterError, 
-    cleanupFiles, 
     detectImages
 );
 
