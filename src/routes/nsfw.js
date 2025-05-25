@@ -3,6 +3,7 @@ import multer from 'multer';
 import { detectImage, detectImages } from '../controllers/nsfwController.js';
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
@@ -115,7 +116,7 @@ const fileFilter = (req, file, cb) => {
                 '.tif': 'image/tiff'
             };
             file.mimetype = mimeMap[ext] || file.mimetype;
-            console.log(`修正后的MIME类型: ${file.mimetype}`);
+            console.log(`修正后的MIME类型 (fileFilter): ${file.mimetype}`);
         }
 
         // 检查 MIME 类型
@@ -140,8 +141,40 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, UPLOAD_CONFIG.UPLOAD_DIR);
+    },
+    filename: function (req, file, cb) {
+        const originalExt = path.extname(file.originalname).toLowerCase();
+        let extension = '';
+
+        // 优先使用原始扩展名（如果它在允许列表中）
+        if (ALLOWED_EXTENSIONS.includes(originalExt)) {
+            extension = originalExt;
+        } else {
+            // 否则，尝试从修正后的MIME类型推断扩展名
+            const mimeToExt = {
+                'image/jpeg': '.jpg',
+                'image/jpg': '.jpg',
+                'image/png': '.png',
+                'image/gif': '.gif',
+                'image/webp': '.webp',
+                'image/heic': '.heic',
+                'image/heif': '.heif',
+                'image/bmp': '.bmp',
+                'image/tiff': '.tiff',
+                'image/x-tiff': '.tif'
+            };
+            extension = mimeToExt[file.mimetype] || originalExt || '.tmp';
+            console.log(`推断出的扩展名 (storage.filename): ${extension} (基于MIME: ${file.mimetype})`);
+        }
+        cb(null, `${uuidv4()}${extension}`);
+    }
+});
+
 const upload = multer({
-    dest: UPLOAD_CONFIG.UPLOAD_DIR,
+    storage: storage,
     limits: {
         fileSize: UPLOAD_CONFIG.MAX_FILE_SIZE,
         files: UPLOAD_CONFIG.MAX_FILES
