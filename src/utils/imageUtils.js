@@ -8,8 +8,8 @@ async function optimizeForNSFW(imagePath) {
     const processedBuffer = await sharp(imagePath)
       .rotate()
       .toFormat('jpeg', { // 强制转换为标准格式
-        quality: 100,
-        chromaSubsampling: '4:4:4'
+        quality: 90,
+        chromaSubsampling: '4:2:0'
       })
       .toBuffer();
   
@@ -20,7 +20,7 @@ async function optimizeForNSFW(imagePath) {
         height: 299,
         fit: 'cover',
         position: 'attention',
-        kernel: sharp.kernel.lanczos2,
+        kernel: sharp.kernel.lanczos3,
         fastShrinkOnLoad: false
       })
       .toColorspace('srgb')
@@ -59,8 +59,8 @@ async function optimizeForNSFW(imagePath) {
     return sharp(canvas.toBuffer('image/png')) // 统一输出为 PNG
       .sharpen({ sigma: 0.8 })
       .jpeg({
-        quality: 100,
-        chromaSubsampling: '4:4:4',
+        quality: 90,
+        chromaSubsampling: '4:2:0',
         optimiseScans: true
       })
       .toBuffer();
